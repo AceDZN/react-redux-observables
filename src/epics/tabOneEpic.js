@@ -13,7 +13,7 @@ export const requestTabOneDataEpic = action$ =>
     ofType(Actions.TAB_ONE_DATA_REQUESTED),
     switchMap(() =>
       getJSON(URLS.DATA).pipe(
-        mergeMap(({ response }) => of(Actions.tabOneDataReceived(response))),
+        mergeMap(( response ) => of(Actions.tabOneDataReceived(response))),
         catchError(error => of(Actions.fetchRejected(error)))
       )
     )

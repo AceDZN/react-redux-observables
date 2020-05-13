@@ -1,15 +1,23 @@
 import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import Actions from '../../actions'
+import SearchBox from '../searchBox';
+import SearchResults from '../searchResults';
 
 const TabOne = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(Actions.requestTabOneData())
   }, [dispatch])
 
-  return <div>Tab One</div>
+
+  return (
+    <div>
+      <SearchBox />
+      <SearchResults />
+    </div>
+  )
 }
 
 export default TabOne
