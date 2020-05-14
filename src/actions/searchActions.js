@@ -1,6 +1,8 @@
 // Action Types
 const SET_SEARCH_QUERY = 'SET_SEARCH_QUERY'
 const SEARCH_RESULTS_RECIEVED = 'SEARCH_RESULTS_RECIEVED'
+const GET_CACHED_RESULTS = 'GET_CACHED_RESULTS';
+const SET_CACHED_RESULTS = 'SET_CACHED_RESULTS';
 const SEARCH_CANCELLED = 'SEARCH_CANCELLED'
 const FETCH_SEARCH_RESULTS = 'FETCH_SEARCH_RESULTS';
 
@@ -15,6 +17,17 @@ const fetchSearchResults = payload => ({
   payload
 })
 
+
+const getCachedResults = payload => ({
+  type: GET_CACHED_RESULTS,
+  payload
+})
+
+
+const setCachedResults = payload => ({
+  type: SET_CACHED_RESULTS,
+  payload
+})
 
 const resetSearchQuery = payload => ({
   type: SEARCH_CANCELLED,
@@ -32,9 +45,13 @@ export default {
   SET_SEARCH_QUERY,
   SEARCH_RESULTS_RECIEVED,
   SEARCH_CANCELLED,
+  GET_CACHED_RESULTS,
+  SET_CACHED_RESULTS,
   FETCH_SEARCH_RESULTS,
   setSearchQuery,
   fetchSearchResults,
+  getCachedResults,
+  setCachedResults,
   resetSearchQuery,
   searchResultsRecieved,
 }

@@ -3,6 +3,8 @@ import { connectRouter } from 'connected-react-router'
 import appReducer, { loadingReducer } from './appReducer'
 import tabOneReducer from './tabOneReducer'
 import searchReducer from './searchReducer'
+import wishListReducer from './wishListReducer'
+
 
 
 export default history =>
@@ -11,5 +13,6 @@ export default history =>
     appReducer,
     loadingReducer,
     tabOneReducer,
-    searchReducer
+    searchReducer,
+    wishListReducer
   })

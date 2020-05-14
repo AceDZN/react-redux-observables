@@ -5,10 +5,14 @@ import {
   Toolbar,
   Typography,
   Link,
-  Box
+  Box,
+  Badge
 } from '@material-ui/core'
+import { connect } from 'react-redux'
+
 import { Link as RouterLink } from 'react-router-dom'
 import ROUTES from '../consts/routesConsts'
+import LocalMallIcon from '@material-ui/icons/LocalMall';
 
 const useAppBarStyles = makeStyles(theme => ({
   toolbar: {
@@ -42,8 +46,16 @@ const AppBarItem = ({ label, to }) => {
   )
 }
 
-const AppBar = () => {
+const AppBar = ({ wishListItems }) => {
   const classes = useAppBarStyles()
+  const renderWishlistBadge = () => {
+    return (
+      <Badge badgeContent={wishListItems.length} color="secondary">
+        <LocalMallIcon fontSize="large" />
+      </Badge>
+    )
+  }
+
   return (
     <MUIAppBar position="fixed" className={classes.appBar}>
       <Toolbar className={classes.toolbar}>
@@ -53,12 +65,23 @@ const AppBar = () => {
           </Typography>
         </Link>
         <Box mr="20px">
-          <AppBarItem label="Tab One" to={ROUTES.TAB_ONE} />
-          <AppBarItem label="Tab Two" to={ROUTES.TAB_TWO} />
+          <AppBarItem label="Search" to={ROUTES.TAB_ONE} />
+          <AppBarItem label="Wishlist" to={ROUTES.TAB_TWO} />
+
+          <AppBarItem label={renderWishlistBadge()} to={ROUTES.TAB_TWO} />
         </Box>
       </Toolbar>
     </MUIAppBar>
   )
 }
 
-export default AppBar
+const mapStateToProps = ({ wishListReducer }) => {
+  return {
+    wishListItems: wishListReducer.wishListItems
+  }
+}
+
+
+export default connect(
+  mapStateToProps
+)(AppBar)

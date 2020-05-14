@@ -1,14 +1,19 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core'
 import Paper from '@material-ui/core/Paper';
 import SingleResult from './SingleResult';
 import { Grid, CircularProgress } from '@material-ui/core'
+import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
 
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
-
+    transition: 'opacity 320ms ease-in-out',
+    '&.hidden': {
+      opacity: 0
+    }
   },
   paper: {
     padding: theme.spacing(2),
@@ -17,14 +22,7 @@ const useStyles = makeStyles(theme => ({
     overflowY: 'auto',
     maxHeight: 'calc(100vh - 64px - 88px)'
   },
-  image: {
-    width: 128,
-    height: 128,
-  },
-  img: {
-    maxWidth: '100px',
-    maxHeight: '100px',
-  },
+
   resultsContainer: {
     display: 'grid',
     gridGap: '1.25em',
@@ -49,14 +47,30 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  result: {
-    // flexGrow: 1
+  footer: {
+    display: 'flex',
+    justifyContent: 'end',
+    padding: '1em 0 0'
   }
+
 }))
 
 
-const SearchResults = ({ searchResults, isLoading }) => {
+const SearchResults = ({ searchResults, isLoading, searchQuery, wishListItems }) => {
   const classes = useStyles();
+  const [snackbarMessage, setsnackbarMessage] = useState('');
+  const [snackbarVisible, setsnackbarVisibility] = useState(false);
+
+  const handleCloseSnackbar = () => {
+    setsnackbarVisibility(false);
+  }
+
+  const activateSnackbar = (message) => {
+    setsnackbarMessage(message);
+    setsnackbarVisibility(true);
+  }
+
+
   if (isLoading) {
     return (
       <div className={classes.root}>
@@ -66,22 +80,39 @@ const SearchResults = ({ searchResults, isLoading }) => {
       </div>
     )
   }
-  return searchResults.length ? (
-    <div className={classes.root}>
+
+
+  return (
+    <div className={`${classes.root} ${searchResults.length ? 'shown' : 'hidden'}`}>
       <Paper className={classes.paper}>
         <div className={classes.resultsContainer}>
-          {searchResults.map(result => <SingleResult key={result.sku} {...result} />)}
+          {searchResults.length ? searchResults.map(result => <SingleResult activateSnackbar={activateSnackbar} key={result.sku} {...result} is_favorite={wishListItems.includes(result.sku)} />) : null}
+        </div>
+        <div className={classes.footer}>
+          <Grid container justify="center" padding="16">
+            {searchQuery}
+          </Grid>
         </div>
       </Paper>
+      <Snackbar
+        color="primary"
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        key={`bottom,center`}
+        open={snackbarVisible}
+        autoHideDuration={2500}
+        onClose={handleCloseSnackbar}
+        message={snackbarMessage}
+      />
     </div>
-  ) : null
-
+  )
 }
 
-const mapStateToProps = ({ searchReducer }) => {
+const mapStateToProps = ({ searchReducer, wishListReducer }) => {
   return {
+    searchQuery: searchReducer.searchQuery,
     searchResults: searchReducer.searchResults,
-    isLoading: searchReducer.isLoading
+    isLoading: searchReducer.isLoading,
+    wishListItems: wishListReducer.wishListItems
   }
 }
 export default connect(

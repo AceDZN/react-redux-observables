@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, connect } from 'react-redux'
 import Actions from '../../actions'
 import { makeStyles } from '@material-ui/core'
 import TextField from '@material-ui/core/TextField';
@@ -47,13 +47,12 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const products = ['bread', 'milk', 'eggs', 'wheat', 'cleaning', 'solution', 'Avocado', 'Towels', 'Wood', 'trip', 'camping', 'coca cola', 'chips'];
+const products = ['pasta', 'bread', 'milk', 'eggs', 'wheat', 'cleaning', 'solution', 'Avocado', 'Towels', 'Wood', 'trip', 'camping', 'coca cola', 'chips'];
 
-
-const SearchBox = () => {
+const SearchBox = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(props.searchQuery);
 
   useEffect(() => {
     if (!searchQuery || searchQuery.length < 3) {
@@ -69,20 +68,27 @@ const SearchBox = () => {
 
   const getRandomProduct = (currentProduct) => {
     const randomProduct = products[Math.floor(Math.random() * products.length)];
-    if (randomProduct === currentProduct)
+    if (randomProduct == currentProduct)
       return getRandomProduct(currentProduct)
     return randomProduct
   };
   const searchRandomProduct = () => {
-    setSearchQuery(getRandomProduct());
+    setSearchQuery(getRandomProduct(searchQuery));
   }
 
   return (
-    <div className={`${classes.root} ${searchQuery.length < 3 ? 'empty' : ''}`}>
+    <div className={`${classes.root} ${!searchQuery || searchQuery.length < 3 ? 'empty' : ''}`}>
       <TextField className={classes.input} label="Search" variant="outlined" value={searchQuery} onChange={setSearchValue} />
       <Button className={classes.button} onClick={searchRandomProduct}>get random item</Button>
     </div>
   )
 }
 
-export default SearchBox
+const mapStateToProps = ({ searchReducer }) => {
+  return {
+    searchQuery: searchReducer.searchQuery
+  }
+}
+export default connect(
+  mapStateToProps
+)(SearchBox)
